@@ -291,6 +291,13 @@ onAuthStateChanged(auth, (user) => {
                 <button onclick="logoutAdmin()" class="text-red-500 font-bold text-xs hover:underline">CERRAR SESIÓN</button>
             `;
             adminTable.prepend(navDiv);
+
+            // Inyectar contenedor de KPIs
+            const kpiDiv = document.createElement('div');
+            kpiDiv.id = 'kpiContainer';
+            kpiDiv.className = "grid grid-cols-1 md:grid-cols-3 gap-4 mb-6";
+            // Insertar después de la navegación
+            navDiv.after(kpiDiv);
         }
 
         renderCotizaciones();
@@ -304,9 +311,35 @@ function renderCotizaciones() {
     const q = query(collection(db, "cotizaciones"), orderBy("fecha_creacion", "desc"));
     onSnapshot(q, (snapshot) => {
         const container = document.getElementById('listaCotizaciones');
+        const kpiContainer = document.getElementById('kpiContainer');
         container.innerHTML = '';
+
+        // --- CÁLCULO DE KPIs ---
+        const stats = {
+            total: snapshot.size,
+            aceptadas: 0,
+            tiempos: [],
+            empresas: {}
+        };
+
         snapshot.docs.forEach((docSnap, index) => {
             const data = docSnap.data();
+            
+            // 1. Para Tasa de Conversión
+            if (data.estado === 'Aceptada_Cliente') stats.aceptadas++;
+
+            // 2. Para Tiempo de Respuesta (Días entre creación y decisión)
+            if (data.fecha_decision && data.fecha_creacion) {
+                const inicio = data.fecha_creacion.toMillis();
+                const fin = data.fecha_decision.toMillis ? data.fecha_decision.toMillis() : data.fecha_decision.getTime();
+                const dias = (fin - inicio) / (1000 * 60 * 60 * 24);
+                stats.tiempos.push(dias);
+            }
+
+            // 3. Para Ranking de Empresas
+            const emp = data.razon_social || 'Desconocida';
+            stats.empresas[emp] = (stats.empresas[emp] || 0) + 1;
+
             const id = docSnap.id;
             const codREQ = generarCodigoAuditoria(snapshot.size - 1 - index, "REQ");
             
@@ -381,6 +414,35 @@ function renderCotizaciones() {
                     </td>
                 </tr>`;
         });
+
+        // --- RENDERIZADO DE KPIs ---
+        if (kpiContainer) {
+            const conversion = stats.total > 0 ? ((stats.aceptadas / stats.total) * 100).toFixed(1) : 0;
+            const tiempoPromedio = stats.tiempos.length > 0 
+                ? (stats.tiempos.reduce((a, b) => a + b, 0) / stats.tiempos.length).toFixed(1) 
+                : "---";
+            
+            const ranking = Object.entries(stats.empresas)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3);
+
+            kpiContainer.innerHTML = `
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Tasa de Conversión</p>
+                    <p class="text-2xl font-black text-emerald-600">${conversion}% <span class="text-[10px] text-slate-400 font-medium">Cierres</span></p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Tiempo de Respuesta</p>
+                    <p class="text-2xl font-black text-blue-600">${tiempoPromedio} <span class="text-[10px] text-slate-400 font-medium">Días promedio</span></p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Ranking Empresas (Top 3)</p>
+                    <div class="text-[11px] font-bold text-slate-700 truncate">
+                        ${ranking.map(([name, count], i) => `${i+1}. ${name} (${count})`).join('<br>')}
+                    </div>
+                </div>
+            `;
+        }
     });
 }
 window.accionCotizarHC = async (id, codigo) => {
@@ -1704,7 +1766,11 @@ window.enviarCorreoSolicitud = async (id, codigo) => {
             total_facturado: d.total_facturado || (hc ? "S/ " + (hc.ingresos.unitario * hc.ingresos.cantidad).toFixed(2) : "0.00"),
             utilidad: d.utilidad_bruta || "0.00",
             margen: d.margen_rentabilidad || "0%",
-            ingreso_hora_alumno: d.ingreso_real_hora_alumno || "0.00"
+            ingreso_hora_alumno: d.ingreso_real_hora_alumno || "0.00",
+
+            // Enlaces de acción directa para el jefe (One-Click Approval)
+            link_aprobar: `${window.location.origin}/approve.html?id=${id}&action=PTE_Aceptada`,
+            link_rechazar: `${window.location.origin}/approve.html?id=${id}&action=PTE_Rechazada`
         };
 
         const response = await emailjs.send('service_oe6288g', 'template_dwpsc2p', templateParams);
