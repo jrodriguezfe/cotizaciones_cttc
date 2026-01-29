@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo PTE | CTTC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <script type="text/javascript">
+       (function(){
+          // Reemplaza "TU_PUBLIC_KEY" con el código de tu Dashboard (Account > API Keys)
+          emailjs.init("AxpzSxbmgY5xCHQ0V"); 
+       })();
+    </script>
+</head>
+<body class="bg-gray-100 p-4 md:p-6">
+    
+    <div id="loginSection" class="max-w-md mx-auto bg-white p-8 mt-20 rounded-xl shadow-lg border border-gray-100">
+        <div class="text-center mb-6">
+            <div class="bg-blue-600 w-12 h-12 rounded-lg mx-auto flex items-center justify-center text-white font-bold mb-2">CT</div>
+            <h2 class="text-2xl font-bold text-gray-800">Acceso Admin</h2>
+            <p class="text-gray-500 text-sm">Ingresa tus credenciales de SENATI</p>
+        </div>
+        <div class="space-y-4">
+            <input type="email" id="adminEmail" placeholder="Correo institucional" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            <input type="password" id="adminPass" placeholder="Contraseña" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            <button onclick="loginAdmin()" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 rounded-lg font-bold transition duration-200">
+                INGRESAR AL PANEL
+            </button>
+        </div>
+        <div class="mt-6 text-center">
+            <a href="index.html" class="text-blue-600 text-sm font-semibold hover:underline flex items-center justify-center gap-1">
+                Volver al Formulario
+            </a>
+        </div>
+    </div>
+
+    <div id="adminTable" class="hidden w-full max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+            <div>
+                <span class="text-blue-600 font-bold text-sm tracking-widest uppercase">Sistema de Gestión PTE 2026</span>
+                <h2 class="text-3xl font-extrabold text-gray-900">Bandeja de Requerimientos</h2>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="logoutAdmin()" class="flex items-center gap-2 text-gray-500 font-semibold hover:text-red-600 transition text-sm">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="p-4 text-xs font-bold text-gray-500 uppercase">Cód. Auditoría / Empresa</th>
+                        <th class="p-4 text-xs font-bold text-gray-500 uppercase">Estado Actual</th>
+                        <th class="p-4 text-xs font-bold text-gray-500 uppercase">Contacto</th>
+                        <th class="p-4 text-xs font-bold text-gray-500 uppercase text-center">Flujo de Trabajo</th>
+                    </tr>
+                </thead>
+                <tbody id="listaCotizaciones" class="divide-y divide-gray-100">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="modalGestion" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl">
+            <div class="p-6 border-b flex justify-between items-center sticky top-0 bg-white">
+                <h3 id="modalTitle" class="text-xl font-bold text-gray-800">Detalle del Proceso</h3>
+                <button onclick="cerrarModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+            <div id="modalBody" class="p-8">
+                </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/admin-handler.js"></script>
+</body>
+</html>

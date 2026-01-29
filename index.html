@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Capacitación | CTTC SENATI</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          // Reemplaza "TU_PUBLIC_KEY" con la llave real de tu Dashboard de EmailJS
+          emailjs.init("AxpzSxbmgY5xCHQ0V"); 
+       })();
+    </script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <nav class="max-w-5xl mx-auto p-6 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-blue-800 rounded-lg flex items-center justify-center text-white font-bold">CT</div>
+            <h1 class="text-xl font-bold text-slate-800 hidden md:block">CTTC - SENATI</h1>
+        </div>
+        <a href="admin.html" class="admin-access-btn text-sm font-medium flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 transition shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-10.429A16.65 16.65 0 0012 2c3.21 0 6.137 1.17 8.39 3.126M12 11c3.517 0 6.799-1.009 9.571-2.753M12 11V21V21m0 0a16.65 16.65 0 01-8.39-3.126" />
+            </svg>
+            Acceso Administrativo
+        </a>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-6 pb-20">
+        <header class="mb-10">
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Solicitud de Propuesta Técnica Económica (PTE)</h2>
+            <p class="text-slate-600">Complete los siguientes datos para elaborar una propuesta ajustada a sus necesidades institucionales.</p>
+        </header>
+
+        <form id="formCotizacion" class="bg-white rounded-2xl shadow-xl shadow-slate-200/60 p-8 border border-slate-100">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="md:col-span-2 border-b border-slate-100 pb-2">
+                    <h3 class="text-blue-700 font-bold uppercase tracking-wider text-sm">1. Información de la Empresa</h3>
+                </div>
+                <div>
+                    <label for="razon_social">Razón Social</label>
+                    <input type="text" id="razon_social" placeholder="Ej: Textil S.A." required class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+                <div>
+                    <label for="ruc">RUC</label>
+                    <input type="text" id="ruc" placeholder="11 dígitos" required maxlength="11" class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+
+                <div class="md:col-span-2 border-b border-slate-100 pb-2 mt-4">
+                    <h3 class="text-blue-700 font-bold uppercase tracking-wider text-sm">2. Detalles del Programa</h3>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="objetivo">Descripción del requerimiento</label>
+                    <textarea id="objetivo" rows="3" placeholder="Identificar el objetivo general que se busca alcanzar con la capacitación..." required class="w-full p-3 rounded-lg border border-slate-300"></textarea>
+                </div>
+                <div>
+                    <label for="perfil">Perfil del personal a capacitar</label>
+                    <input type="text" id="perfil" placeholder="Ej: Operarios de corte" required class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+                <div>
+                    <label for="nivel">Nivel del curso</label>
+                    <select id="nivel" class="w-full p-3 rounded-lg border border-slate-300 bg-white">
+                        <option value="Básico">Básico</option>
+                        <option value="Intermedio">Intermedio</option>
+                        <option value="Avanzado">Avanzado</option>
+                        <option value="Especialización">Especialización</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="modalidad">Modalidad</label>
+                    <select id="modalidad" class="w-full p-3 rounded-lg border border-slate-300 bg-white">
+                        <option value="Presencial">Presencial (Planta / SENATI)</option>
+                        <option value="Virtual">Virtual (En vivo)</option>
+                        <option value="Híbrido">Híbrido</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="duracion">Duración estimada (horas)</label>
+                    <input type="number" id="duracion" placeholder="Dejar blanco para propuesta CTTC" class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+                <div>
+                    <label for="lugar">Lugar de realización</label>
+                    <input type="text" id="lugar" placeholder="Ciudad o instalaciones" required class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+                <div>
+                    <label for="horario">Horario y frecuencia tentativa</label>
+                    <input type="text" id="horario" placeholder="Ej: Lun-Mie-Vie 6pm a 9pm" required class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+
+                <div class="md:col-span-2 border-b border-slate-100 pb-2 mt-4">
+                    <h3 class="text-blue-700 font-bold uppercase tracking-wider text-sm">3. Información de Contacto</h3>
+                </div>
+                <div>
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" required class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+                <div>
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" required class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+                <div>
+                    <label for="celular">Celular</label>
+                    <input type="tel" id="celular" required class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+                <div>
+                    <label for="correo">Correo Electrónico (Para envío de PTE)</label>
+                    <input type="email" id="correo" required class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+
+                <div class="md:col-span-2 border-b border-slate-100 pb-2 mt-4">
+                    <h3 class="text-blue-700 font-bold uppercase tracking-wider text-sm">4. Alcance</h3>
+                </div>
+                <div>
+                    <label for="colaboradores">Cantidad de colaboradores</label>
+                    <input type="number" id="colaboradores" required class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+                <div>
+                    <label for="anio">Año de ejecución</label>
+                    <input type="number" id="anio" value="2026" required class="w-full p-3 rounded-lg border border-slate-300">
+                </div>
+
+                <div class="md:col-span-2 flex items-start gap-3 mt-4 bg-slate-50 p-4 rounded-lg">
+                    <input type="checkbox" id="acepto" required class="mt-1 h-4 w-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                    <label for="acepto" class="text-sm text-slate-600 leading-tight">
+                        He leído y acepto las condiciones indicadas para el tratamiento de datos y elaboración de propuestas de CTTC SENATI.
+                    </label>
+                </div>
+
+                <div class="md:col-span-2 mt-6">
+                    <button type="submit" class="w-full bg-blue-800 text-white font-bold py-4 rounded-xl hover:bg-blue-900 transition-all shadow-lg shadow-blue-200 flex justify-center items-center gap-2">
+                        <span>GENERAR SOLICITUD DE PTE</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/form-handler.js"></script>
+</body>
+</html>
