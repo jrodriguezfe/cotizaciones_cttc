@@ -1769,8 +1769,8 @@ window.enviarCorreoSolicitud = async (id, codigo) => {
             ingreso_hora_alumno: d.ingreso_real_hora_alumno || "0.00",
 
             // Enlaces de acción directa para el jefe (One-Click Approval)
-            link_aprobar: `${window.location.origin}/approve.html?id=${id}&action=PTE_Aceptada`,
-            link_rechazar: `${window.location.origin}/approve.html?id=${id}&action=PTE_Rechazada`
+            link_aprobar: `${window.location.origin}/cotizaciones_cttc/approve.html?id=${id}&action=PTE_Aceptada`,
+            link_rechazar: `${window.location.origin}/cotizaciones_cttc/approve.html?id=${id}&action=PTE_Rechazada`
         };
 
         const response = await emailjs.send('service_oe6288g', 'template_dwpsc2p', templateParams);
