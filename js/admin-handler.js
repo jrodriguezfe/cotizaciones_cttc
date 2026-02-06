@@ -1,6 +1,6 @@
 import { db, auth } from './firebase-config.js';
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { collection, query, orderBy, onSnapshot, doc, getDoc, getDocs, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, query, orderBy, onSnapshot, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // --- 1. AUTENTICACIÓN ---
 window.loginAdmin = () => {
@@ -10,6 +10,16 @@ window.loginAdmin = () => {
 };
 
 window.logoutAdmin = () => signOut(auth);
+
+// --- ELIMINAR REQUERIMIENTO ---
+window.eliminarRequerimiento = async (id) => {
+    if (!confirm("¿Está seguro de que desea eliminar este requerimiento? Esta acción es permanente y no se puede deshacer.")) return;
+    try {
+        await deleteDoc(doc(db, "cotizaciones", id));
+    } catch (e) {
+        alert("Error al eliminar: " + e.message);
+    }
+};
 
 // Función para regresar a la vista del formulario del cliente
 window.irAFormularioCliente = () => window.location.href = 'index.html';
@@ -385,6 +395,11 @@ function renderCotizaciones() {
                                 0. VER REQUERIMIENTO COMPLETO
                             </button>                         
                         
+                            <button onclick="eliminarRequerimiento('${id}')" 
+                                class="text-left text-[11px] font-bold text-red-500 hover:underline mb-1">
+                                🗑️ ELIMINAR REQUERIMIENTO
+                            </button>
+
                             <button onclick="accionDisenoCurricular('${id}', '${codREQ}')" 
                                 class="text-left text-[11px] font-bold text-blue-600 hover:underline">
                                 1. DISEÑO CURRICULAR
